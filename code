@@ -1,0 +1,77 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+class BankAccount {
+private:
+    int accountNumber;
+    string name;
+    double balance;
+    string pin;
+public:
+    void createAccount() {
+        cout << "Enter Account Number: ";
+        cin >> accountNumber;
+        cout << "Enter Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Set 4-digit PIN: ";
+        cin >> pin;
+        cout << "Enter Initial Deposit: ";
+        cin >> balance;
+        ofstream file("accounts.txt", ios::app);
+        file << accountNumber << " " << name << " " << pin << " " << balance << endl;
+        file.close();
+        cout << "Account Created Successfully!\n";
+    }
+    void displayAccount(int accNo, string enteredPin) {
+        ifstream file("accounts.txt");
+        int acc;
+        string nm, p;
+        double bal;
+        bool found = false;
+        while (file >> acc >> nm >> p >> bal) {
+            if (acc == accNo && p == enteredPin) {
+                cout << "Account Number: " << acc << endl;
+                cout << "Name: " << nm << endl;
+                cout << "Balance: " << bal << endl;
+                found = true;
+                break;
+            }
+        }
+        file.close();
+        if (!found)
+            cout << "Invalid Account Number or PIN!\n";
+    }
+};
+int main() {
+    BankAccount account;
+    int choice, accNo;
+    string pin;
+    do {
+        cout << "\n--- Mini Banking System ---\n";
+        cout << "1. Create Account\n";
+        cout << "2. View Account\n";
+        cout << "3. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                account.createAccount();
+                break;
+            case 2:
+                cout << "Enter Account Number: ";
+                cin >> accNo;
+                cout << "Enter PIN: ";
+                cin >> pin;
+                account.displayAccount(accNo, pin);
+                break;
+            case 3:
+                cout << "Thank you for using the system!\n";
+                break;
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } while (choice != 3);
+    return 0;
+}
